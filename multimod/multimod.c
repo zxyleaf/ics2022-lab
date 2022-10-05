@@ -52,11 +52,23 @@ uint64_t Remainder(uint64_t a, uint64_t b) //求余位运算a%b
     c = Divide(a, b);
     return a - (Multiply(b, c));
 }
+uint64_t remainder(uint64_t a, uint64_t b) //求余位运算a%b
+{
+    for (int i = 63; i >= 0; i--)
+    {
+        if ((a >> i) >= b)
+        {
+            a -= b << i;
+        }
+    }
+
+    return a;
+}
 
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
     uint64_t result = 0, tmp;
-    tmp = Remainder(a, m);
-    b = Remainder(b, m);
+    tmp = remainder(a, m);
+    b = remainder(b, m);
     while (b)
     {
         if (b & 1) //每次求b的最低位 如果是1则进
@@ -70,7 +82,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
             }
             else
                 result = result + tmp;
-            result = Remainder(result, m);
+            result = remainder(result, m);
         }
         if (tmp + tmp < tmp)
         {
@@ -80,7 +92,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
         }
         else
             tmp <<= 1; //计算 A*2^n的值。
-        tmp = Remainder(tmp, m);
+        tmp = remainder(tmp, m);
         b >>= 1;
     }
     return result;

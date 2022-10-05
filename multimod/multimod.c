@@ -21,7 +21,7 @@ uint64_t Multiply(uint64_t a, uint64_t b)
     uint64_t sum = 0;
     while (b)
     {
-        if (b & 0x1)
+        if (b & s1)
         {
             sum += a;
         }
@@ -33,15 +33,13 @@ uint64_t Multiply(uint64_t a, uint64_t b)
 uint64_t Divide(uint64_t a, uint64_t b)
 {
     uint64_t quotient = 0;
-    if (!b)
-    {
-        return 1;
-    }
     for (int i = 63; i >= 0; i--)
     {
         if ((a >> i) >= b)
         {
-            quotient += 1 << i;
+            uint64_t t = 1;
+            t = t << i;
+            quotient += t;
             a -= b << i;
         }
     }
@@ -56,7 +54,7 @@ uint64_t Remainder(uint64_t a, uint64_t b) //求余位运算a%b
 }
 
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
-  uint64_t result = 0, tmp;
+    uint64_t result = 0, tmp;
     tmp = Remainder(a, m);
     b = Remainder(b, m);
     while (b)
@@ -64,18 +62,20 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
         if (b & 1) //每次求b的最低位 如果是1则进
         {
             uint64_t ifcf = result + tmp;
-            if ((result >> 63 == 1 && tmp >> 63 == 1) || (result >> 63 == 1 && ifcf >> 63 == 0 && tmp >> 63 == 0) || (result >> 63 == 0 && ifcf >> 63 == 0 && tmp >> 63 == 1))
+            if ((result >> 1) + (tmp >> 1) >= (-1ULL >> 1))
             {
-                uint64_t thesub = m - tmp;
+                uint64_t thesub;
+                thesub = m - tmp;
                 result = result - thesub;
             }
             else
                 result = result + tmp;
             result = Remainder(result, m);
         }
-        if (tmp >> 63 == 1)
+        if ((tmp >> 1) + (tmp >> 1) >= (-1ULL >> 1))
         {
-            uint64_t thesub = m - tmp;
+            uint64_t thesub;
+            thesub = m - tmp;
             tmp = tmp - thesub;
         }
         else

@@ -1,4 +1,6 @@
 # **DO NOT MODIFY**
+STUID = 211240065
+STUNAME = 赵欣玥
 
 ifeq ($(NAME),)
 $(error Should make in each lab's directory)

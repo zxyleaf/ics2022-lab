@@ -62,7 +62,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
         if (b & 1) //每次求b的最低位 如果是1则进
         {
             uint64_t ifcf = result + tmp;
-            if ((result + tmp) < tmp || (result + tmp) < result)
+            if (ifcf < tmp || ifcf < result)
             {
                 uint64_t thesub;
                 thesub = m - tmp;

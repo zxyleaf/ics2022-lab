@@ -72,7 +72,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
                 result = result + tmp;
             result = Remainder(result, m);
         }
-        if ((tmp + tmp < tmp)
+        if (tmp + tmp < tmp)
         {
             uint64_t thesub;
             thesub = m - tmp;

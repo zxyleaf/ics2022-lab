@@ -21,7 +21,7 @@ uint64_t Multiply(uint64_t a, uint64_t b)
     uint64_t sum = 0;
     while (b)
     {
-        if (b & s1)
+        if (b & 1)
         {
             sum += a;
         }

@@ -2,7 +2,13 @@
 #include <string.h>
 
 int64_t asm_add(int64_t a, int64_t b) {
-  return a + b;
+  int64_t c = 0;
+  asm(
+        "addl %2, %0"      
+        : "=g"(c)          
+        : "0"(a), "g"(b)    
+        : "memory");        
+  return c;
 }
 
 int asm_popcnt(uint64_t x) {

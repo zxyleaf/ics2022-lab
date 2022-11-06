@@ -4,7 +4,7 @@
 int64_t asm_add(int64_t a, int64_t b) {
   int64_t c = 0;
   asm(
-        "addl %2, %0"      
+        "add %2, %0"      
         : "=g"(c)          
         : "0"(a), "g"(b)    
         : "memory");        

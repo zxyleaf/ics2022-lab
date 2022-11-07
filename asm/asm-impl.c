@@ -23,7 +23,7 @@ int asm_popcnt(uint64_t x)
         "movq %%rbx, %%rdx;" //  rdx -- x
         "and $1, %%rdx;"
         "add %%edx, %%eax"
-        "shrq $1, %%rbx;" // rdx --x =  x >> 1
+        "shr $1, %%rbx;" // rdx --x =  x >> 1
         "incl %%edi;" // i++
         "jmp loop;"
         "e:"

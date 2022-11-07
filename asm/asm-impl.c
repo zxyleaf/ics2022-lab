@@ -36,17 +36,17 @@ void *asm_memcpy(void *dest, const void *src, size_t n)
 {
     //void *pos = dest;
     asm("movq $0,%%rdi;"
-        "loop2: cmpq %%rcx, %%rdi;"
+        "loop2: cmpq %%rdx, %%rdi;"
         "jae e2;"
-        "movzbl (%%rbx),%%rdx;"
-    	"mov %%rdx,(%%rax);"
-    	"add $1,%%rax;"
+        "movzbl (%%rcx),%%rax;"
+    	"mov %%rax,(%%rbx);"
+    	"add $1,%%rcx;"
     	"add $1,%%rbx;"
     	"add $1,%%rsi;"
         "jmp loop2;"
         "e2:"
-        : "=a"(dest)
-        : "a"(dest), "b"(src), "c"(n));
+        : "=b"(dest)
+        : "b"(dest), "c"(src), "d"(n));
     return dest;
 }
 

@@ -65,7 +65,31 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  return 0;
+  void *pos = dest;
+    asm("mov %0, -0x18(%%rbp)\n" // dest
+        "mov %1, -0x20(%%rbp)\n" // src
+        "mov %2, -0x28(%%rbp)\n" // n
+        "mov -0x18(%%rbp), %%rax\n"
+        "mov %%rax, %3\n"          //传递pos参数
+        "movl $0x0, -0xc(%%rbp)\n" // loop variable
+        "jmp start\n"
+        "loop:\n"
+        "mov -0x20(%%rbp),%%rax\n"
+        "movzbl (%%rax),%%edx\n"
+        "mov -0x18(%%rbp),%%rax\n"
+        "mov %%dl, (%%rax)\n"
+        "addq $0x1, -0x18(%%rbp)\n"
+        "addq $0x1, -0x20(%%rbp)\n"
+        "addq $0x1, -0xc(%%rbp)\n"
+        "start:\n"
+        "mov -0xc(%%rbp),%%rax\n"
+        "cltq\n"
+        "cmp %%rax, -0x28(%%rbp)\n"
+        "ja loop\n"
+        :
+        : "r"(dest), "r"(src), "r"(n), "r"(pos)
+        : "%rax", "%edx", "%rdx", "%dl");
+  return pos;
 }
 
 void asm_longjmp(asm_jmp_buf env, int val) {

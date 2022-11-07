@@ -38,7 +38,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n)
     asm("movq $0,%%rdi;"
         "loop2: cmpq %%rdx, %%rdi;"
         "jae e2;"
-        "movzbl (%%rcx),%%rax;"
+        "movzb (%%rcx),%%rax;"
     	"mov %%rax,(%%rbx);"
     	"add $1,%%rcx;"
     	"add $1,%%rbx;"

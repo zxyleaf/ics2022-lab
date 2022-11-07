@@ -56,13 +56,13 @@ int asm_setjmp(asm_jmp_buf env)
        "mov %%rbx, (%%rax)\n" // * 保存rbx 到rdx的内容中
        "mov %%rsi, 8(%%rax)\n"
        "mov %%rdi, 16(%%rax)\n" 
-       "mov (%%rsp), %%rcx\n" //
-       "mov %%rcx, 24(%%rax)\n" // * rsp存放rbp的旧址
+       "mov %%rbp, 24(%%rax)\n" // * rsp存放rbp的旧址
        
-       "lea 0x10(%%rsp), %%rcx\n"
+       "lea 8(%%rsp), %%rcx\n"
        "mov %%rcx, 32(%%rax)\n" // * rsp+10的地址是rsp的旧值
-       "mov 0x8(%%rsp), %%rcx\n"   
+       "mov (%%rsp), %%rcx\n"   
        "mov %%rcx, 40(%%rax)\n"  // * rsp+8存放pc
+       "xor %%rax, %%rax\n"
        :
        :
        : );
@@ -71,7 +71,8 @@ int asm_setjmp(asm_jmp_buf env)
 
 void asm_longjmp(asm_jmp_buf env, int val)
 {
-     asm ("mov %%rdi, %%rdx\n"
+     asm (
+       "mov %%rdi, %%rdx\n"
        "mov %%esi, %%eax\n"
        "mov (%%rdx), %%rbx\n" 
        "mov 8(%%rdx), %%rsi\n"

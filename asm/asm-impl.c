@@ -22,8 +22,8 @@ int asm_popcnt(uint64_t x)
         "jge e;"
         "movq %%rbx, %%rdx;" //  rdx -- x
         "and $1, %%rdx;"
-        "add %%edx, %%eax"
-        "shr $1, %%rbx;" // rdx --x =  x >> 1
+        "add %%edx, %%eax;"
+        "shrq $1, %%rbx;" // rdx --x =  x >> 1
         "incl %%edi;" // i++
         "jmp loop;"
         "e:"
@@ -35,8 +35,8 @@ int asm_popcnt(uint64_t x)
 void *asm_memcpy(void *dest, const void *src, size_t n)
 {
     //void *pos = dest;
-    asm("movq $0,%%rsi;"
-        "loop2: cmpq %%rcx, %%rsi;"
+    asm("movq $0,%%rdi;"
+        "loop2: cmpq %%rcx, %%rdi;"
         "jae e2;"
         "movzbl (%%rbx),%%rdx;"
     	"mov %%rdx,(%%rax);"

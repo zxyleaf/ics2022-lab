@@ -41,8 +41,8 @@ void *asm_memcpy(void *dest, const void *src, size_t n)
 {
     //void *pos = dest;
     asm("movq $0,%%rsi;"
-        "loop2: cmpq %%rsi, %%rcx;"
-        "jbe e2;"
+        "loop2: cmpq %%rcx, %%rsi;"
+        "jae e2;"
         "mov (%%rbx,%%rsi,1),%%dl;"
         "mov %%dl, (%%rax,%%rsi,1);"
         "addq $0x1, %%rsi;"  //rsi ++

@@ -52,46 +52,34 @@ void *asm_memcpy(void *dest, const void *src, size_t n)
 
 int asm_setjmp(asm_jmp_buf env)
 {
-    asm ("mov %[env], %%rdx\n"
-       "mov %%rbx, (%%rdx)\n" // * 保存rbx 到rdx的内容中
-       "mov (%%rsp), %%rax\n" //
-       "mov %%rax, 0x8(%%rdx)\n" // * rsp存放rbp的旧址
-       "mov %%r12, 0x10(%%rdx)\n"
-       "mov %%r13, 0x18(%%rdx)\n"
-       "mov %%r14, 0x20(%%rdx)\n"
-       "mov %%r15, 0x28(%%rdx)\n" //被调用者保存寄存器
-       "mov %%rbx, 0x30(%%rdx)\n"
-       "mov %%rcx, 0x38(%%rdx)\n"
-       "mov %%rdx, 0x40(%%rdx)\n"
-       "mov %%rsi, 0x48(%%rdx)\n"
-       "lea 0x10(%%rsp), %%rax\n"
-       "mov %%rax, 0x50(%%rdx)\n" // * rsp+10的地址是rsp的旧值
-       "mov 0x8(%%rsp), %%rax\n"   
-       "mov %%rax, 0x58(%%rdx)\n"  // * rsp+8存放pc
+    asm ("mov %%rdi, %%rax\n"
+       "mov %%rbx, (%%rax)\n" // * 保存rbx 到rdx的内容中
+       "mov %%rsi, 8(%%rax)\n"
+       "mov %%rdi, 16(%%rax)\n" 
+       "mov (%%rsp), %%rcx\n" //
+       "mov %%rcx, 24(%%rax)\n" // * rsp存放rbp的旧址
+       
+       "lea 0x10(%%rsp), %%rcx\n"
+       "mov %%rcx, 32(%%rax)\n" // * rsp+10的地址是rsp的旧值
+       "mov 0x8(%%rsp), %%rcx\n"   
+       "mov %%rcx, 40(%%rax)\n"  // * rsp+8存放pc
        :
-       : [env] "m"(env)
-       : "%rax", "cc", "memory");
+       :
+       : );
        return 0;
 }
 
 void asm_longjmp(asm_jmp_buf env, int val)
 {
-     asm ("mov %[env], %%rdx\n"
+     asm ("mov %%rdi, %%rdx\n"
+       "mov %%esi, %%eax\n"
        "mov (%%rdx), %%rbx\n" 
-       "mov 0x10(%%rdx), %%r12\n"
-       "mov 0x18(%%rdx), %%r13\n"
-       "mov 0x20(%%rdx), %%r14\n"
-       "mov 0x28(%%rdx), %%r15\n"
-       "mov 0x30(%%rdx), %%rbx\n"
-       "mov 0x38(%%rdx), %%rcx\n"
-       "mov 0x40(%%rdx), %%rdx\n"
-       "mov 0x48(%%rdx), %%rsi\n"
-       "mov %[val], %%rax\n"
-       "mov 0x50(%%rdx), %%rsp\n"
-       "mov 0x8(%%rdx), %%rbp\n"
-       "mov 0x58(%%rdx), %%rdx\n"
-       "jmpq *%%rdx\n"
+       "mov 8(%%rdx), %%rsi\n"
+       "mov 16(%%rdx), %%rdi\n"
+       "mov 24(%%rdx), %%rbp\n"
+       "mov 32(%%rdx), %%rsp\n"
+       "jmpq *40(%%rdx)\n"
        :
-       : [env] "m"(env), [val] "m"(val)
-       : "cc", "memory");
+       : 
+       :);
 }

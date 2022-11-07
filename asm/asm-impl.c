@@ -12,28 +12,26 @@ int64_t asm_add(int64_t a, int64_t b) {
 }
 
 int asm_popcnt(uint64_t x) {
-  int cnt = 0;
-    asm("mov %1, -0x18(%%rbp)\n"
-        "movl $0x0, -0x8(%%rbp)\n" // i
-        "jmp dest1\n"
-        "dest3: mov -0x8(%%rbp), %%eax\n"
-        "mov -0x18(%%rbp), %%rdx\n"
-        "mov %%eax, %%ecx\n"
-        "shr %%cl, %%rdx\n"
-        "mov %%rdx, %%rax\n"
-        "and $0x1, %%eax\n"  //???
-        "test %%rax,%%rax\n" // 如果rax为零，设置ZF零标志为1
-        "je dest2\n"
-        "addl $0x1, %0\n"
-        "dest2: addl $0x1, -0x8(%%rbp)\n" // i++
-        "dest1: cmpl $0x3f, -0x8(%%rbp)\n"
-        "jle dest3\n"
-        : "+r"(cnt) //占位符 %0
-        : "r"(x)    //占位符 %1
-        : "%rax", "%eax", "%ecx", "%rdx", "%cl"
-
-    );
-    return cnt;
+  int x=0;
+  asm ("xor %%rax, %%rax\n"
+       "movl $0x0, -0x4(%%rbp)\n"
+       "dest2:mov %[in], -0x18(%%rbp)\n"
+       "and $0x1, %[in]\n"
+       "test %[in], %[in]\n"
+       "je dest1\n"
+       "inc %%rax\n"
+       "dest1:mov -0x18(%%rbp),%[in]\n"
+       "shr $0x1, %[in] \n"
+       "incl -0x4(%%rbp)\n"
+       "cmp $0x3f,-0x4(%%rbp)\n"
+       "jle dest2\n"
+       "mov %%rax, -0x18(%%rbp)\n"
+       "mov -0x18(%%rbp), %[out]\n"
+       : [out] "+g"(x)
+       : [in] "r" (n)
+       : "%rax","cc","memory");
+  
+  return x;
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {

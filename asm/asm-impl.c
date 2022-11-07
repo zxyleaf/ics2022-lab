@@ -60,10 +60,14 @@ int asm_setjmp(asm_jmp_buf env)
        "mov %%r13, 0x18(%%rdx)\n"
        "mov %%r14, 0x20(%%rdx)\n"
        "mov %%r15, 0x28(%%rdx)\n" //被调用者保存寄存器
+       "mov %%rbx, 0x30(%%rdx)\n"
+       "mov %%rcx, 0x38(%%rdx)\n"
+       "mov %%rdx, 0x40(%%rdx)\n"
+       "mov %%rsi, 0x48(%%rdx)\n"
        "lea 0x10(%%rsp), %%rax\n"
-       "mov %%rax, 0x30(%%rdx)\n" // * rsp+10的地址是rsp的旧值
+       "mov %%rax, 0x50(%%rdx)\n" // * rsp+10的地址是rsp的旧值
        "mov 0x8(%%rsp), %%rax\n"   
-       "mov %%rax, 0x38(%%rdx)\n"  // * rsp+8存放pc
+       "mov %%rax, 0x58(%%rdx)\n"  // * rsp+8存放pc
        :
        : [env] "m"(env)
        : "%rax", "cc", "memory");
@@ -78,10 +82,14 @@ void asm_longjmp(asm_jmp_buf env, int val)
        "mov 0x18(%%rdx), %%r13\n"
        "mov 0x20(%%rdx), %%r14\n"
        "mov 0x28(%%rdx), %%r15\n"
+       "mov 0x30(%%rdx), %%rbx\n"
+       "mov 0x38(%%rdx), %%rcx\n"
+       "mov 0x40(%%rdx), %%rdx\n"
+       "mov 0x48(%%rdx), %%rsi\n"
        "mov %[val], %%rax\n"
-       "mov 0x30(%%rdx), %%rsp\n"
+       "mov 0x50(%%rdx), %%rsp\n"
        "mov 0x8(%%rdx), %%rbp\n"
-       "mov 0x38(%%rdx), %%rdx\n"
+       "mov 0x58(%%rdx), %%rdx\n"
        "jmpq *%%rdx\n"
        :
        : [env] "m"(env), [val] "m"(val)

@@ -12,7 +12,7 @@ int64_t asm_add(int64_t a, int64_t b) {
 }
 
 int asm_popcnt(uint64_t x) {
-  int x=0;
+  int ans=0;
   asm ("xor %%rax, %%rax\n"
        "movl $0x0, -0x4(%%rbp)\n"
        "dest2:mov %[in], -0x18(%%rbp)\n"
@@ -27,11 +27,11 @@ int asm_popcnt(uint64_t x) {
        "jle dest2\n"
        "mov %%rax, -0x18(%%rbp)\n"
        "mov -0x18(%%rbp), %[out]\n"
-       : [out] "+g"(x)
-       : [in] "r" (n)
+       : [out] "+g"(ans)
+       : [in] "r" (x)
        : "%rax","cc","memory");
   
-  return x;
+  return ans;
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {

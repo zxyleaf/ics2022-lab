@@ -12,25 +12,26 @@ int64_t asm_add(int64_t a, int64_t b) {
 }
 
 int asm_popcnt(uint64_t x) {
-  int ans=0;
-  asm ("xor %%rax, %%rax\n"
-       "movl $0x0, -0x4(%%rbp)\n"
-       "dest2:mov %[in], -0x18(%%rbp)\n"
-       "and $0x1, %[in]\n"
-       "test %[in], %[in]\n"
-       "je dest1\n"
-       "inc %%rax\n"
-       "dest1:mov -0x18(%%rbp),%[in]\n"
-       "shr $0x1, %[in] \n"
-       "incl -0x4(%%rbp)\n"
-       "cmp $0x3f,-0x4(%%rbp)\n"
-       "jle dest2\n"
-       "mov %%rax, -0x18(%%rbp)\n"
-       "mov -0x18(%%rbp), %[out]\n"
-       : [out] "+g"(ans)
-       : [in] "r" (x)
-       : "%rax","cc","memory");
-  
+  int ans;
+  asm(
+  "movl $0, %%eax;"//ans
+  "movl $0, %%ecx;"//i
+  "cycle_popcnt:cmpl $64, %%ecx;"
+  "jge label;"
+  "movq %%rbx, %%rdx;"
+  "shrq %%ecx, %%rdx;"
+  "and $1, %%rdx;"
+  "cmpq $1, %%rdx;"
+  "je t1;"
+  "jmp t2;"
+  "t1:"
+  "incl %%eax;"
+  "t2:"
+  "incl %%ecx;"
+  "jmp cycle_popcnt;"
+  "label:"
+  :"=a"(ans)
+  :"b"(x));
   return ans;
 }
 

@@ -12,30 +12,28 @@ int64_t asm_add(int64_t a, int64_t b) {
 }
 
 int asm_popcnt(uint64_t x) {
-  int ans = 0;
-    asm(
-        "movq %1, -0x18(%%rbp)\n"
+  int cnt = 0;
+    asm("mov %1, -0x18(%%rbp)\n"
         "movl $0x0, -0x8(%%rbp)\n" // i
-        "themain:\n"
-        "cmpl $0x3f, -0x8(%%rbp)\n"
-        "jge e0\n" // 63小则跳转
-        "mov -0x8(%%rbp), %%eax\n"
-        "movq -0x18(%%rbp), %%rdx\n"
+        "jmp dest1\n"
+        "dest3: mov -0x8(%%rbp), %%eax\n"
+        "mov -0x18(%%rbp), %%rdx\n"
         "mov %%eax, %%ecx\n"
         "shr %%cl, %%rdx\n"
-        "movq %%rdx, %%rax\n"
-        "and $0x1, %%eax\n"
-        "cmp $0x0,%%rax\n" // 如果rax为零，设置ZF零标志为1   "cmp %%eax $0\n\t"
-        "je e1\n"
+        "mov %%rdx, %%rax\n"
+        "and $0x1, %%eax\n"  //???
+        "test %%rax,%%rax\n" // 如果rax为零，设置ZF零标志为1
+        "je dest2\n"
         "addl $0x1, %0\n"
-        "e1:\n"
-        "addl $0x1, -0x8(%%rbp)\n"
-        "jmp themain\n"
-        "e0:\n"
-        : "+r"(ans)
-        : "r"(x)
-        : "%rax", "%eax", "%ecx", "%rdx", "%cl");
-    return ans;
+        "dest2: addl $0x1, -0x8(%%rbp)\n" // i++
+        "dest1: cmpl $0x3f, -0x8(%%rbp)\n"
+        "jle dest3\n"
+        : "+r"(cnt) //占位符 %0
+        : "r"(x)    //占位符 %1
+        : "%rax", "%eax", "%ecx", "%rdx", "%cl"
+
+    );
+    return cnt;
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {

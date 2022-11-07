@@ -42,7 +42,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n)
     	"mov %%rax,(%%rbx);"
     	"add $1,%%rcx;"
     	"add $1,%%rbx;"
-    	"add $1,%%rsi;"
+    	"add $1,%%rdi;"
         "jmp loop2;"
         "e2:"
         : "=b"(dest)

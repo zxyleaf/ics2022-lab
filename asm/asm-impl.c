@@ -60,7 +60,7 @@ int asm_setjmp(asm_jmp_buf env)
        
        "lea 8(%%rsp), %%rcx\n"
        "mov %%rcx, 32(%%rax)\n" // * rsp+10的地址是rsp的旧值
-       "mov (%%rsp), %%rcx\n"   
+       "lea (%%rsp), %%rcx\n"   
        "mov %%rcx, 40(%%rax)\n"  // * rsp+8存放pc
        "xor %%rax, %%rax\n"
        :

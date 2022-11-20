@@ -34,7 +34,7 @@ int *sieve(int n) {
   for (int i = 2; i <= n; i++)
     is_prime[i] = true;
 
-        for (int i = 2; i <= N; i++) {
+        for (int i = 2; i <= n; i++) {
             if (is_prime[i] == 1)
                 primes[count++] = i;
             //循环控制表达式的意义：j小于等于素数数组的个数 或 素数数组中的每一个素数与 i 的积小于范围上限N

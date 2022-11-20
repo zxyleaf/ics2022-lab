@@ -34,17 +34,17 @@ int *sieve(int n) {
   for (int i = 2; i <= n; i++)
     is_prime[i] = true;
 
-        for (i = 2; i <= N; i++) {
-            if (isPrime[i])
+        for (int i = 2; i <= N; i++) {
+            if (is_prime[i])
                 Prime[count++] = i;
             //循环控制表达式的意义：j小于等于素数数组的个数 或 素数数组中的每一个素数与 i 的积小于范围上限N
-            for (j = 0; (j < count) && (Prime[j] * (long long)i) <= N; j++)//将i强制转换是因为vs上有warning，要求转换为宽类型防止算术溢出。数据上不产生影响
+            for (int j = 0; (j < count) && (primes[j] * (long long)i) <= N; j++)//将i强制转换是因为vs上有warning，要求转换为宽类型防止算术溢出。数据上不产生影响
             {
-                isPrime[i * Prime[j]] = false;//每一个素数的 i 倍（i >= 2）都不是素数，置为false
+                is_prime[i * primes[j]] = false;//每一个素数的 i 倍（i >= 2）都不是素数，置为false
 
                 //这个是欧拉筛法的核心，它可以减少非素数置false的重复率
                 //意义是将每一个合数（非素数）拆成 2（最小因数）与最大因数 的乘积
-                if (i % Prime[j] == 0)
+                if (i % primes[j] == 0)
                     break;
             }
         }

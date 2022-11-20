@@ -35,7 +35,7 @@ int *sieve(int n) {
     is_prime[i] = true;
 
         for (int i = 2; i <= N; i++) {
-            if (is_prime[i])
+            if (is_prime[i] == 1)
                 primes[count++] = i;
             //循环控制表达式的意义：j小于等于素数数组的个数 或 素数数组中的每一个素数与 i 的积小于范围上限N
             for (int j = 0; (j < count) && (primes[j] * (long long)i) <= N; j++)//将i强制转换是因为vs上有warning，要求转换为宽类型防止算术溢出。数据上不产生影响

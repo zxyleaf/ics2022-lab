@@ -30,7 +30,7 @@ int *sieve(int n) {
 
 int *sieve(int n) {
  assert(n + 1 < N);
-  int count = 0;
+  int count = 1;
   for (int i = 3; i <= n; i += 2)
     is_prime[i] = true;
 
@@ -38,7 +38,7 @@ int *sieve(int n) {
             if (is_prime[i] == 1)
                 primes[count++] = i;
             //循环控制表达式的意义：j小于等于素数数组的个数 或 素数数组中的每一个素数与 i 的积小于范围上限N
-            for (int j = 0; (j < count) && (primes[j] * (long long)i) <= N; j++)//将i强制转换是因为vs上有warning，要求转换为宽类型防止算术溢出。数据上不产生影响
+            for (int j = 1; (j < count) && (primes[j] * (long long)i) <= n; j++)//将i强制转换是因为vs上有warning，要求转换为宽类型防止算术溢出。数据上不产生影响
             {
                 is_prime[i * primes[j]] = false;//每一个素数的 i 倍（i >= 2）都不是素数，置为false
 
@@ -48,7 +48,7 @@ int *sieve(int n) {
                     break;
             }
         }
-    
+  primes[count]=0;
   return primes;
   /*
   primes[0]=2;

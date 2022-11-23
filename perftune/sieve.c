@@ -29,12 +29,12 @@ int *sieve(int n) {
 }*/
 
 int *sieve(int n) {
- /* assert(n + 1 < N);
+ assert(n + 1 < N);
   int count = 0;
-  for (int i = 2; i <= n; i += 2)
+  for (int i = 3; i <= n; i += 2)
     is_prime[i] = true;
 
-        for (int i = 2; i <= n; i++) {
+        for (int i = 3; i <= n; i+=2) {
             if (is_prime[i] == 1)
                 primes[count++] = i;
             //循环控制表达式的意义：j小于等于素数数组的个数 或 素数数组中的每一个素数与 i 的积小于范围上限N
@@ -49,7 +49,8 @@ int *sieve(int n) {
             }
         }
     
-  return primes;*/
+  return primes;
+  /*
   primes[0]=2;
   int cnt=1;
   for (int i=3;i<=n;i+=2)
@@ -77,7 +78,7 @@ int *sieve(int n) {
   }
 
   primes[cnt]=0;
-  return primes;
+  return primes;*/
 }
 
 

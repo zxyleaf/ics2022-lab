@@ -77,6 +77,7 @@ int *sieve(int n) {
   }
 
   primes[cnt]=0;
+  return primes;
 }
 
 

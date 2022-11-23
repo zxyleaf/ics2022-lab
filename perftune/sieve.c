@@ -29,9 +29,9 @@ int *sieve(int n) {
 }*/
 
 int *sieve(int n) {
-  assert(n + 1 < N);
+ /* assert(n + 1 < N);
   int count = 0;
-  for (int i = 2; i <= n; i++)
+  for (int i = 2; i <= n; i += 2)
     is_prime[i] = true;
 
         for (int i = 2; i <= n; i++) {
@@ -49,5 +49,34 @@ int *sieve(int n) {
             }
         }
     
-  return primes;
+  return primes;*/
+  primes[0]=2;
+  int cnt=1;
+  for (int i=3;i<=n;i+=2)
+  {
+    is_prime[i]=1;
+  }
+
+  for (int i=3;i<=n;i+=2)
+  {
+    if (is_prime[i])
+    {
+      primes[cnt++]=i;
+    }
+
+
+    for (int j=1;j<cnt && i*primes[j]<=n;j++)
+    {
+      is_prime[i*primes[j]]=0;
+
+      if (i%primes[j]==0)
+      {
+        break;
+      }
+    }
+  }
+
+  primes[cnt]=0;
 }
+
+

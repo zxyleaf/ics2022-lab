@@ -30,6 +30,7 @@ int *sieve(int n) {
 
 int *sieve(int n) {
  assert(n + 1 < N);
+  primes[0]=2;
   int count = 1;
   for (int i = 3; i <= n; i += 2)
     is_prime[i] = true;

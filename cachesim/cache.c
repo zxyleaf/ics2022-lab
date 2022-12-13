@@ -9,8 +9,8 @@ static int CACHE_GROUP_NUM;
 static int CACHE_ALL_LINE_NUM;
 static int CACHE_GROUP_WIDTH;
 typedef struct{
-  bool dirty_bit : true;
-  bool valid_bit : false;
+  bool dirty_bit : 1;
+  bool valid_bit : 1;
   uint32_t tag;
   uint8_t data[BLOCK_SIZE];
 }cache_line;

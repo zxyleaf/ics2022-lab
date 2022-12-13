@@ -2,6 +2,11 @@
 #include <inttypes.h>
 #include <string.h>
 
+#define ADDR_IN_BLOCK(addr) (addr & mask_with_len(BLOCK_WIDTH))
+uint32_t block_addr;
+uint32_t group_id;
+uint32_t tag;
+uint32_t block_num;
 void mem_read(uintptr_t block_num, uint8_t *buf);
 void mem_write(uintptr_t block_num, const uint8_t *buf);
 
@@ -18,8 +23,6 @@ typedef struct{
 
 static cache_line **cache;
 
-static uint64_t hit_num = 0;
-static uint64_t miss_num = 0;
 static uint64_t cycle_cnt = 0;
 
 void cycle_increase(int n) { cycle_cnt += n; }
@@ -28,23 +31,21 @@ void cycle_increase(int n) { cycle_cnt += n; }
 
 uint32_t cache_read(uintptr_t addr) {
   addr &= ~0x3;
-  uint32_t block_addr = addr & (BLOCK_SIZE - 1);
-  uint32_t group_id = (addr >> BLOCK_WIDTH) & (CACHE_GROUP_NUM - 1);
-  uint32_t tag = addr >> (BLOCK_WIDTH + CACHE_GROUP_WIDTH);
-  uint32_t block_num  = addr >> (BLOCK_WIDTH);
+  block_addr = ADDR_IN_BLOCK(addr);
+  group_id = (addr >> BLOCK_WIDTH) & (CACHE_GROUP_NUM - 1);
+  tag = addr >> (BLOCK_WIDTH + CACHE_GROUP_WIDTH);
+  block_num  = addr >> (BLOCK_WIDTH);
   uint32_t *ret;
 
   for (int i = 0; i < CACHE_LINE_NUM; i++)
   {
     if (cache[group_id][i].valid_bit && cache[group_id][i].tag == tag)
     {
-      hit_num++;
       ret = (void *)(cache[group_id][i].data + (block_addr));
       return *ret;
     }
   }
 
-  miss_num++;
   for (int i = 0; i < CACHE_LINE_NUM; i++)
   {
     if (cache[group_id][i].valid_bit == false)
@@ -67,10 +68,10 @@ uint32_t cache_read(uintptr_t addr) {
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   addr &= ~0x3;
-  uint32_t block_addr = addr & (BLOCK_SIZE - 1);
-  uint32_t group_id = (addr >> BLOCK_WIDTH) & (CACHE_GROUP_NUM - 1);
-  uint32_t tag = addr >> (BLOCK_WIDTH + CACHE_GROUP_WIDTH);
-  uint32_t block_num  = addr >> (BLOCK_WIDTH);
+  block_addr = ADDR_IN_BLOCK(addr);
+  group_id = (addr >> BLOCK_WIDTH) & (CACHE_GROUP_NUM - 1);
+  tag = addr >> (BLOCK_WIDTH + CACHE_GROUP_WIDTH);
+  block_num  = addr >> (BLOCK_WIDTH);
   for (int i = 0; i < CACHE_LINE_NUM; i++)
   {
     if (cache[group_id][i].valid_bit && cache[group_id][i].tag == tag)
@@ -81,13 +82,11 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       return;
     }
   }
-   miss_num++;
   for (int i = 0; i < CACHE_LINE_NUM; i++)
   {
     if (cache[group_id][i].valid_bit == false)
     {
       mem_read(block_num, cache[group_id][i].data);
-
       cache[group_id][i].tag = tag;
       cache[group_id][i].valid_bit = true;
       uint32_t *tmp =(void *)(cache[group_id][i].data + (addr % BLOCK_SIZE));

@@ -25,4 +25,4 @@ uint32_t cpu_uncache_read(uintptr_t addr, int len) {
 
 void cpu_uncache_write(uintptr_t addr, int len, uint32_t data) {
   mem_uncache_write(addr, data << addr_offset_bit(addr), len2datamask[len] << addr_offset_bit(addr));
-
+}

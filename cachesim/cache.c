@@ -43,7 +43,7 @@ void init_cache(int total_size_width, int associativity_width) {
     for (int j = 0; j < CACHE_LINE_NUM; j++){
       cache[i][j].valid_bit = 0;
 	  cache[i][j].dirty_bit = 0;
-	  memset(cache[i][j].data, 0, sizeof(cache[i][j].data))
+	  memset(cache[i][j].data, 0, sizeof(cache[i][j].data));
 	}
   }
 }
